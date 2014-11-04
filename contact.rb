@@ -28,18 +28,17 @@ class Contact
 
     def find(index)
       # TODO: Will find and return contact by index
+      ContactDatabase.find(index)
     end
 
     def all
       # TODO: Return the list of contacts, as is
+      ContactDatabase.list_contacts
     end
 
     def show(id)
       # TODO: Show a contact, based on ID
-    end
-
-    def list
-      ContactDatabase.list_contacts
+      ContactDatabase.show(id)
     end
   
   end

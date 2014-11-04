@@ -22,10 +22,24 @@ class ContactDatabase
     CSV.open(@contact_db, "a") do |csv|
       csv.add_row(contact)
     end
-
-
     contacts_array = CSV.read(@contact_db)
     puts "an index #{contacts_array.index(contacts_array[-1]) + 1}"
   end
 
+  def self.find(search_term)
+    #####
+    contacts_array = CSV.read(@contact_db)
+    output = contacts_array.select do |contact|
+      contact.include?(search_term)
+    end
+    puts output
+  end
+
+  def self.show(id)
+    contacts_array = CSV.read(@contact_db)
+    output = contacts_array.detect do |contact|
+      (contacts_array.index(contact) + 1) == id.to_i
+    end
+    puts output
+  end
 end

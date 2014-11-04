@@ -32,9 +32,10 @@ class Application
       list_contacts
     when "show"
       #run show command
-
-    when "find" # use regex Here
+      Contact.show(input[1])
+    when "find" 
       #run find command
+      Contact.find(input[1])
     when "exit"
       return
     else
@@ -67,7 +68,6 @@ class Application
     else
       new_contact
     end
-
     # print '> '
     # menu(STDIN.gets.chomp())
     # menu
@@ -76,7 +76,7 @@ class Application
   def list_contacts
     puts "Contact List"
     puts "******************************************"
-    Contact.list
+    Contact.all
     # print '> '
     # menu(STDIN.gets.chomp())
   end
