@@ -1,4 +1,5 @@
 ## TODO: Implement CSV reading/writing
+# require 'pry'
 require 'csv'
 
 class ContactDatabase
@@ -23,16 +24,23 @@ class ContactDatabase
       csv.add_row(contact)
     end
     contacts_array = CSV.read(@contact_db)
-    puts "an index #{contacts_array.index(contacts_array[-1]) + 1}"
+    puts "New contact ID #{contacts_array.index(contacts_array[-1]) + 1}"
   end
 
   def self.find(search_term)
-    #####
+
+    # only finding 1 word results
+    # ie not finding Andy in "Andy Theriault"
+
     contacts_array = CSV.read(@contact_db)
-    output = contacts_array.select do |contact|
-      contact.include?(search_term)
+    results = contacts_array.select do |contact|
+      # puts contact
+      contact.include? search_term.to_s
     end
-    puts output
+    puts "Found #{results.length} results: "
+    results.each do |result|
+      puts "Name: #{result[0]} Email: #{result[1]}"
+    end
   end
 
   def self.show(id)
