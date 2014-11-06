@@ -1,3 +1,5 @@
+#!/usr/local/rvm/rubies/ruby-2.1.3/bin/ruby
+
 require_relative 'contact'
 # require_relative 'contact_database'
 
@@ -25,8 +27,6 @@ class Application
       show(input[1])
     when "find"
       find(input[1])
-    when "add"
-      add_phone_number if input[1] == "phone"
     when "exit"
       return
     else
@@ -38,21 +38,25 @@ class Application
   def new_contact
     puts "Contact Entry Mode"
     puts "******************************************"
-    print "Enter email address for new contact: "
+    puts "Enter email address for new contact."
     email_check = false
-    until email_check == true
+    until email_check
+      print '> '
       email = STDIN.gets.chomp()
-      if email == 'quit' || email == ''
-        email_check = true # CHECK OUT THIS LINE ANDY!!!!!
+      if email == 'quit' || ''
+        break # CHECK OUT THIS LINE ANDY!!!!!
       elsif Contact.exists?(email)
         puts "Contact already exists. Enter another email address or quit."
+        # break if STDIN.gets.chomp() == "quit" || nil
       else
         email_check = true
-        print "Enter full name for new contact: "
+        puts "Enter full name for new contact."
+        print '> '
         name = STDIN.gets.chomp()
         puts "Name: #{name}"
         puts "Email: #{email}"
-        print "Please confirm contact information is correct: "
+        puts "Please confirm contact information is correct."
+        print '> '
         if STDIN.gets.chomp() == "yes"
           puts "New Contact ID: #{Contact.create(name,email)}"
         else
@@ -78,29 +82,9 @@ class Application
       puts "Name: #{result[0]} Email: #{result[1]}"
     end
   end
-
   def show(search)
     results = Contact.show(search)
     puts "Name: #{results[0]} Email: #{results[1]}"
-  end
-
-  def add_phone_number
-    input = Hash.new
-    print "Please enter the contact email: "
-    contact_email = STDIN.gets.chomp
-    if Contact.exists?(contact_email)
-      loop do
-        print "Please enter a phone number(or q to quit): "
-        number = STDIN.gets.chomp
-        break if number == 'q'
-        print "Please enter the phone number type: "
-        type = STDIN.gets.chomp
-        input[type.to_sym] = number
-      end
-      Contact.add_phone_number(contact_email, input)
-    else
-      puts "No contact found for that email."
-    end
   end
 end
 
