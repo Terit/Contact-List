@@ -67,25 +67,44 @@ class Application
     puts "******************************************"
     contacts_array = Contact.all
     contacts_array.each_with_index do |contact, row|
-      puts "ID: #{row + 1} Name: #{contact[0]} Email: #{contact[1]}"
+      phone_numbers = String.new
+      if contact[2]
+        contact[2].each do |type, number|
+          phone_numbers << "#{type.to_s.capitalize}: #{number} "
+        end
+      end
+      puts "ID: #{row + 1} Name: #{contact[0]} Email: #{contact[1]} #{phone_numbers}"
     end
   end
 
-  def find(id)
-    results = Contact.find(id)
+  def find(keyword)
+    results = Contact.find(keyword)
     puts "Found #{results.length} results: "
     results.each do |result|
-      puts "Name: #{result[0]} Email: #{result[1]}"
+      phone_numbers = String.new
+      if result[2]
+        result[2].each do |type, number|
+          phone_numbers << "#{type.to_s.capitalize}: #{number} "
+        end
+      end
+      puts "Name: #{result[0]} Email: #{result[1]} #{phone_numbers}"
     end
   end
 
-  def show(search)
-    results = Contact.show(search)
-    puts "Name: #{results[0]} Email: #{results[1]}"
+  def show(id)
+    result = Contact.show(id)
+    # puts "Name: #{results[0]} Email: #{results[1]}"
+    phone_numbers = String.new
+    if result[2]
+      result[2].each do |type, number|
+        phone_numbers << "#{type.to_s.capitalize}: #{number} "
+      end
+    end
+    puts "Name: #{result[0]} Email: #{result[1]} #{phone_numbers}"
   end
 
   def add_phone_number
-    input = Hash.new
+    input = Array.new
     print "Please enter the contact email: "
     contact_email = STDIN.gets.chomp
     if Contact.exists?(contact_email)
@@ -95,7 +114,7 @@ class Application
         break if number == 'q'
         print "Please enter the phone number type: "
         type = STDIN.gets.chomp
-        input[type.to_sym] = number
+        input = [type.to_sym, number]
       end
       Contact.add_phone_number(contact_email, input)
     else

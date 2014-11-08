@@ -1,3 +1,4 @@
+require 'pry'
 require_relative 'contact_database'
 
 class Contact
@@ -47,15 +48,10 @@ class Contact
       # TODO: Show a contact, based on ID
       contacts_array = ContactDatabase.read
       contacts_array.each_with_index do |value, index|
-        if (index + 1) == id.to_i
-          return value
-        else
-          return []
-        end
+        # binding.pry
+        return value if (index + 1) == id.to_i
       end
-      # output = contacts_array.detect do |contact|
-      #   (contacts_array.index(contact) + 1) == id.to_i
-      # end
+          return []
     end
 
     def exists?(email)
@@ -66,15 +62,17 @@ class Contact
       false
     end
 
-    def add_phone_number(contact_email, phone_hash)
+    def add_phone_number(contact_email, phone_array)
       # TODO: append phone_hash to the contact csv line
       contacts_array = ContactDatabase.read
       contacts_array.each do |contact|
-        contact.each do |info|
-          if info.include? contact_email
-            contact << phone_hash
-          end
-        end
+          if contact[1].include? contact_email
+            if contact[2]
+              contact[2][phone_array[0]] = phone_array[1]
+            else
+              contact << Hash[*phone_array]
+            end
+          end          
       end
       ContactDatabase.update(contacts_array)
       ContactDatabase.write
