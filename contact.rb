@@ -51,7 +51,7 @@ class Contact
         # binding.pry
         return value if (index + 1) == id.to_i
       end
-          return []
+      return []
     end
 
     def exists?(email)
@@ -66,13 +66,13 @@ class Contact
       # TODO: append phone_hash to the contact csv line
       contacts_array = ContactDatabase.read
       contacts_array.each do |contact|
-          if contact[1].include? contact_email
-            if contact[2]
-              contact[2][phone_array[0]] = phone_array[1]
-            else
-              contact << Hash[*phone_array]
-            end
-          end          
+        if contact[1].include? contact_email
+          if contact[2]
+            contact[2][phone_array[0]] = phone_array[1]
+          else
+            contact << Hash[*phone_array]
+          end
+        end
       end
       ContactDatabase.update(contacts_array)
       ContactDatabase.write
