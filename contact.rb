@@ -67,7 +67,7 @@ class Contact
     end
 
     def find_by_email(email)
-      search(email, "email").first
+      search(email, "email")
     end
 
     def search(keyword, column)

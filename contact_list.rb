@@ -70,40 +70,15 @@ class Application
   end
 
   def find(keyword)
-    results = Contact.find(keyword)
-    puts "Found #{results.length} results: "
-    results.each do |result|
-      phone_numbers = String.new
-      if result[2]
-        result[2].each do |type, number|
-          phone_numbers << "#{type.to_s.capitalize}: #{number} "
-        end
-      end
-      puts "Name: #{result[0]} Email: #{result[1]} #{phone_numbers}"
-    end
+    results = []
+    results << Contact.find_by_email(keyword)
+    results << Contact.find_all_by_lastname(keyword)
+    results << Contact.find_all_by_firstname(keyword)
+    puts results.flatten
   end
 
   def show(id)
     puts Contact.find(id)
-  end
-
-  def add_phone_number
-    input = Array.new
-    print "Please enter the contact email: "
-    contact_email = STDIN.gets.chomp
-    if Contact.exists?(contact_email)
-      loop do
-        print "Please enter a phone number(or q to quit): "
-        number = STDIN.gets.chomp
-        break if number == 'q'
-        print "Please enter the phone number type: "
-        type = STDIN.gets.chomp
-        input = [type.to_sym, number]
-      end
-      Contact.add_phone_number(contact_email, input)
-    else
-      puts "No contact found for that email."
-    end
   end
 end
 
