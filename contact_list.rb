@@ -1,4 +1,3 @@
-require 'pry'
 require_relative 'contact'
 
 class Application
@@ -25,8 +24,6 @@ class Application
       show(input[1].to_i)
     when "find"
       find(input[1])
-    when "add"
-      add_phone_number if input[1] == "phone"
     when "exit"
       return
     else
