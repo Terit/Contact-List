@@ -49,7 +49,7 @@ class Contact
     def find(id)
       rows = @@database.exec_params("SELECT * FROM contacts WHERE id = $1;", [id]).values
       return nil if rows.first.nil?
-      Contact.new(rows[0]["firstname"],rows[0]["lastname"],rows[0]["email"])
+      Contact.new(rows[0][1],rows[0][2],rows[0][3],rows[0][0])
     end
 
     def find_all_by_lastname(name)

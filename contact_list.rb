@@ -22,7 +22,7 @@ class Application
     when "list"
       list_contacts
     when "show"
-      show(input[1])
+      show(input[1].to_i)
     when "find"
       find(input[1])
     when "add"
@@ -84,15 +84,7 @@ class Application
   end
 
   def show(id)
-    result = Contact.show(id)
-    # puts "Name: #{results[0]} Email: #{results[1]}"
-    phone_numbers = String.new
-    if result[2]
-      result[2].each do |type, number|
-        phone_numbers << "#{type.to_s.capitalize}: #{number} "
-      end
-    end
-    puts "Name: #{result[0]} Email: #{result[1]} #{phone_numbers}"
+    puts Contact.find(id)
   end
 
   def add_phone_number
