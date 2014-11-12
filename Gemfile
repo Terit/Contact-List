@@ -1,6 +1,6 @@
 # A sample Gemfile
 source "https://rubygems.org"
- 
-gem 'rspec'
+
+gem 'activerecord'
 gem 'pry'
 gem 'pg'

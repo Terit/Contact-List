@@ -1,4 +1,4 @@
-require_relative 'contact'
+require_relative 'setup'
 
 class Application
 
@@ -50,7 +50,7 @@ class Application
       puts "Email: #{email}"
       print "Please confirm contact information is correct: "
       if STDIN.gets.chomp() == "yes"
-        puts "New Contact ID: #{Contact.new(firstname,lastname, email).save.id}"
+        puts "New Contact ID: #{Contact.create(firstname,lastname,email)}"
       else
         new_contact
       end
@@ -67,11 +67,7 @@ class Application
   end
 
   def find(keyword)
-    results = []
-    results << Contact.find_by_email(keyword)
-    results << Contact.find_all_by_lastname(keyword)
-    results << Contact.find_all_by_firstname(keyword)
-    puts results.flatten
+    puts Contact.where("email = '#{keyword}' OR firstname ILIKE '%#{keyword}%' OR lastname ILIKE '%#{keyword}%'")
   end
 
   def show(id)
