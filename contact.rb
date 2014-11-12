@@ -1,83 +1,83 @@
-require 'pry'
 require_relative 'contact_database'
 
 class Contact
 
-  attr_accessor :name, :email, :phone_numbers
+  attr_accessor :firstname, :lastname, :email
+  attr_reader :id
 
-  def initialize(name, email)
-    # TODO: assign local variables to instance variables
-    @name = name
+  def initialize(firstname,lastname,email,id=nil)
+    @id = id
+    @firstname = firstname
+    @lastname = lastname
     @email = email
-    save
   end
 
-  def to_s
-    # TODO: return string representation of Contact
+  def create
+    @id = @@database.exec_params("INSERT into CONTACTS (firstname, lastname, email) values ($1, $2, $3) RETURNING id;", [@firstname, @lastname, @email]).values[0][0].to_i
+  end
+
+  def update
+    @@database.exec_params("UPDATE contacts SET (firstname, lastname, email) VALUES ($1, $2, $3) WHERE id = $4;", [@firstname, @lastname, @email, @id])
+  end
+
+  def destroy
+    @@database.exec("DELETE FROM contacts WHERE id = #{id};")
   end
 
   def save
-    ContactDatabase.add(@name, @email)
+    id ? update : create
   end
 
-  ## Class Methods
-  class << self
-    def create(name, email)
-      # TODO: Will initialize a contact as well as add it to the list of contacts
-      Contact.new(name,email)
-      ContactDatabase.write
-      ContactDatabase.db.length
-    end
+  def to_s
+    "ID: #{id} Name: #{firstname} #{lastname} Email: #{email}"
+  end
 
-    def find(keyword)
-      # TODO: Will find and return contact by keyword
-      contacts_array = ContactDatabase.read
-      results = contacts_array.select do |contact|
-        contact.detect do |information|
-          information.downcase.include? (keyword.downcase.to_s)
-        end
-      end
-    end
+  class << self
+
+    @@database = ContactDatabase.new.connection
 
     def all
-      # TODO: Return the list of contacts, as is
-      ContactDatabase.read
-    end
-
-    def show(id)
-      # TODO: Show a contact, based on ID
-      contacts_array = ContactDatabase.read
-      contacts_array.each_with_index do |value, index|
-        # binding.pry
-        return value if (index + 1) == id.to_i
-      end
-      return []
-    end
-
-    def exists?(email)
-      contacts_array = ContactDatabase.read
-      contacts_array.each do |contact|
-        return true if contact[1] == email
-      end
-      false
-    end
-
-    def add_phone_number(contact_email, phone_array)
-      # TODO: append phone_hash to the contact csv line
-      contacts_array = ContactDatabase.read
-      contacts_array.each do |contact|
-        if contact[1].include? contact_email
-          if contact[2]
-            contact[2][phone_array[0]] = phone_array[1]
-          else
-            contact << Hash[*phone_array]
-          end
+      contacts = []
+      @@database.exec("SELECT * FROM contacts") do |results|
+        results.each do |contact|
+          contacts << contact
         end
       end
-      ContactDatabase.update(contacts_array)
-      ContactDatabase.write
+      contacts
+    end
+
+    def find(id)
+      rows = @@database.exec_params("SELECT * FROM contacts WHERE id = $1;", [id]).values
+      return nil if rows.first.nil?
+      Contact.new(rows[0]["firstname"],rows[0]["lastname"],rows[0]["email"])
+    end
+
+    def find_all_by_lastname(name)
+      # contacts = []
+      # rows = @@database.exec_params("SELECT * FROM contacts WHERE lastname = $1", [name]).values
+      # rows.each do |row|
+      #   contacts << Contact.new(row[1],row[2],row[3],row[0])
+      # end
+      # contacts
+      search(name, "lastname")
+    end
+
+    def find_all_by_firstname(name)
+      search(name, "firstname")
+    end
+
+    def find_by_email(email)
+      search(email, "email").first
+    end
+
+    def search(keyword, column)
+      contacts = []
+      rows = @@database.exec_params("SELECT * FROM contacts WHERE #{column} ILIKE $1;", [keyword]).values
+      rows.each do |row|
+        contacts << Contact.new(row[1],row[2],row[3],row[0])
+      end
+      contacts
     end
 
   end
-
 end
