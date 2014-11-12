@@ -39,7 +39,7 @@ class Application
     print "Enter email address for new contact: "
     email = STDIN.gets.chomp()
     return nil if email == 'quit' || email == ''
-    if Contact.find_by_email(email)
+    if Contact.where(email: email).count > 0
       puts "Contact already exists. Enter another email address."
     else
       print "Enter first name for new contact: "
@@ -50,7 +50,7 @@ class Application
       puts "Email: #{email}"
       print "Please confirm contact information is correct: "
       if STDIN.gets.chomp() == "yes"
-        puts "New Contact ID: #{Contact.create(firstname,lastname,email)}"
+        puts "New Contact ID: #{Contact.create(firstname: firstname, lastname: lastname, email: email).id}"
       else
         new_contact
       end
