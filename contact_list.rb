@@ -33,7 +33,7 @@ class Application
       puts "contact_list.rb: invalid option -- #{input[0]}"
       puts "Try 'contact_list.rb -h' for more information."
     end
-    
+
   end
 
   def new_contact
@@ -64,14 +64,8 @@ class Application
     puts "Contact List"
     puts "******************************************"
     contacts_array = Contact.all
-    contacts_array.each_with_index do |contact, row|
-      phone_numbers = String.new
-      if contact[2]
-        contact[2].each do |type, number|
-          phone_numbers << "#{type.to_s.capitalize}: #{number} "
-        end
-      end
-      puts "ID: #{row + 1} Name: #{contact[0]} Email: #{contact[1]} #{phone_numbers}"
+    contacts_array.each do |contact|
+      puts contact
     end
   end
 

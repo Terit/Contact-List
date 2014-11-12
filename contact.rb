@@ -39,10 +39,9 @@ class Contact
 
     def all
       contacts = []
-      @@database.exec("SELECT * FROM contacts") do |results|
-        results.each do |contact|
-          contacts << contact
-        end
+      rows = @@database.exec("SELECT * FROM contacts").values
+      rows.each do |row|
+        contacts << Contact.new(row[1],row[2],row[3],row[0])
       end
       contacts
     end
@@ -82,3 +81,5 @@ class Contact
 
   end
 end
+
+Contact.all
