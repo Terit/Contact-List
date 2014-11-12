@@ -1,5 +1,5 @@
+require 'pry'
 require_relative 'contact'
-# require_relative 'contact_database'
 
 class Application
 
@@ -33,31 +33,29 @@ class Application
       puts "contact_list.rb: invalid option -- #{input[0]}"
       puts "Try 'contact_list.rb -h' for more information."
     end
+    
   end
 
   def new_contact
     puts "Contact Entry Mode"
     puts "******************************************"
     print "Enter email address for new contact: "
-    email_check = false
-    until email_check == true
-      email = STDIN.gets.chomp()
-      if email == 'quit' || email == ''
-        email_check = true # CHECK OUT THIS LINE ANDY!!!!!
-      elsif Contact.exists?(email)
-        puts "Contact already exists. Enter another email address or quit."
+    email = STDIN.gets.chomp()
+    return nil if email == 'quit' || email == ''
+    if Contact.find_by_email(email)
+      puts "Contact already exists. Enter another email address."
+    else
+      print "Enter first name for new contact: "
+      firstname = STDIN.gets.chomp()
+      print "Enter last name for new contact: "
+      lastname = STDIN.gets.chomp()
+      puts "Name: #{firstname} #{lastname}"
+      puts "Email: #{email}"
+      print "Please confirm contact information is correct: "
+      if STDIN.gets.chomp() == "yes"
+        puts "New Contact ID: #{Contact.new(firstname,lastname, email).save.id}"
       else
-        email_check = true
-        print "Enter full name for new contact: "
-        name = STDIN.gets.chomp()
-        puts "Name: #{name}"
-        puts "Email: #{email}"
-        print "Please confirm contact information is correct: "
-        if STDIN.gets.chomp() == "yes"
-          puts "New Contact ID: #{Contact.create(name,email)}"
-        else
-          new_contact
-        end
+        new_contact
       end
     end
   end

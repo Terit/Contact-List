@@ -14,6 +14,7 @@ class Contact
 
   def create
     @id = @@database.exec_params("INSERT into CONTACTS (firstname, lastname, email) values ($1, $2, $3) RETURNING id;", [@firstname, @lastname, @email]).values[0][0].to_i
+    self
   end
 
   def update

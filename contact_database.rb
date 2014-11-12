@@ -9,7 +9,6 @@ class ContactDatabase
   end
 
   def establish_connection
-    puts "establishing connection ..."
     @connection = PG.connect(
       dbname: 'd5ndd73rhldjkn',
       port: 5432,
@@ -21,6 +20,5 @@ class ContactDatabase
 
   def close
     @connection.close
-    puts "closed connection"
   end
 end
